@@ -128,6 +128,20 @@ class GatewayGuardTests(unittest.TestCase):
     def test_invalid_body_type_is_denied(self):
         self.assertEqual(self.request(body='{"ok":1}').code, "invalid_body_type")
 
+    def test_overflowing_integer_timestamp_is_rejected(self):
+        self.assertEqual(self.request(issued_at=10**10000).code, "invalid_timestamp")
+
+    def test_overflowing_integer_clock_is_rejected(self):
+        guard = GatewayGuard(authorize=lambda *_: True, clock=lambda: 10**10000)
+        self.assertEqual(guard.check(
+            principal_id="agent:alpha", action="read", resource="r",
+            body=b"{}", issued_at=self.now[0], nonce="n"
+        ).code, "invalid_clock")
+
+    def test_overflowing_integer_timing_configuration_is_rejected(self):
+        with self.assertRaises(ValueError):
+            GatewayGuard(GatewayConfig(max_clock_skew_seconds=10**10000))
+
 
 if __name__ == "__main__":
     unittest.main()
