@@ -1,13 +1,15 @@
-# Security policy
+# Security Policy
 
-This repository begins as a transport-neutral request guard. It is not yet a network gateway and is not a production security boundary.
+This repository is an experimental transport-neutral request guard. It is not a network gateway, authenticator, policy service, or production security boundary.
 
-The guard accepts a principal identifier from its caller. A future transport adapter MUST obtain that principal from a trusted authentication layer; arbitrary request headers or unverified message fields are not proof of identity.
+## Reporting
 
-The authorization callback is an integration seam. A production adapter MUST connect it to an authenticated, policy-versioned decision service and fail closed on timeout or error.
+Do not publish exploitable vulnerabilities, credentials, private keys, or sensitive operational data in public issues. Use GitHub private vulnerability reporting or a private security advisory if enabled for this repository. A dedicated private reporting address is not published here; if private reporting is unavailable, the owner must configure an owner-approved private channel before production use.
 
-The in-memory replay cache is process-local and volatile. It does not prevent replay across workers, hosts, restarts, or regions. Production deployment requires a bounded shared store with atomic nonce reservation and retention policy.
+## Trust and operational limits
 
-Payload size and clock-skew checks reduce selected risks but do not replace schema validation, signature verification, TLS, rate limiting, quotas, sandboxing, or protocol-specific threat analysis.
-
-Report suspected vulnerabilities privately to the maintainer. Do not publish exploit details or secrets in public issues.
+- The guard accepts a principal identifier from its caller; it does not authenticate that principal. A trusted upstream authentication layer is mandatory.
+- The authorization callback is an integration seam, not a policy engine. Only an explicit boolean `True` is accepted as an allow result.
+- The replay cache is bounded and process-local. It does not prevent replay across workers, hosts, restarts, or regions; capacity exhaustion fails closed.
+- Body and context length limits, timestamp validation, and a bounded replay cache do not replace schema validation, signature verification, TLS, rate limiting, quotas, durable shared replay state, or protocol-specific threat analysis.
+- Do not add network listeners or enable workload execution until authentication, authorization, schema validation, replay protection, rate limits, audit integration, and protocol-specific security controls are implemented and reviewed.
