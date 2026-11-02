@@ -4,6 +4,10 @@
 **Maturity:** experimental request-guard scaffold deployed to the standalone public repository; Python 3.10–3.12 CI passing  
 **Dependencies:** AIX Core, AIX Codecs, Agent Identity & Trust, Agent Policy Engine
 
+## License status
+
+The repository's code, documentation, schemas, examples, and other materials do not yet have an approved license decision. No root `LICENSE` file or GitHub license declaration is present. Reuse and redistribution rights must not be assumed; licensing remains pending repository-specific review.
+
 ## Mission
 
 Provide a controlled boundary between AIX messages and established transports such as HTTP, MCP and A2A. The gateway is an integration layer, not a replacement protocol. It must preserve upstream protocol semantics while enforcing explicit size, freshness, replay and authorization checks at the gateway boundary.
