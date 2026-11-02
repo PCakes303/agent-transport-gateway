@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "manifest_version": "1.0.0",
+  "id": "agent-transport-gateway",
+  "name": "agent-transport-gateway",
+  "visibility": "public",
+  "maturity": "scaffolding",
+  "summary": "Experimental transport-neutral request guard and future integration boundary for AIX over established protocols.",
+  "license": {"expression": null, "status": "pending-review"},
+  "interfaces": [
+    {"name": "gateway-request-guard", "version": "0.1.0", "kind": "library-function", "stability": "experimental"}
+  ],
+  "dependencies": [
+    {"id": "aix-core", "constraint": "semantic message contract; version TBD", "kind": "contract"},
+    {"id": "aix-codecs", "constraint": "canonical serialization contract; version TBD", "kind": "contract"},
+    {"id": "identity-trust", "constraint": "authenticated principal context; version TBD", "kind": "contract"},
+    {"id": "policy-engine", "constraint": "authorization decision contract; version TBD", "kind": "contract"}
+  ],
+  "security": {
+    "threat_model": "docs/THREAT-MODEL.md",
+    "secrets_in_repository": false,
+    "data_classification": "public",
+    "security_contact": null
+  },
+  "default_branch": "main",
+  "compatibility": [],
+  "evidence": [{"claim": "Request guard denies oversized, stale, replayed and unauthorized requests.", "kind": "test", "location": "tests/test_guard.py"}],
+  "$id": "https://github.com/PCakes303/agent-transport-gateway/blob/main/manifest.json"
+}
