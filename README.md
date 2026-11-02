@@ -2,7 +2,7 @@
 
 **Portfolio position:** Repository 13 / 29 public  
 **Layer:** Protocols  
-**Maturity:** prepared scaffold; standalone remote not yet created  
+**Maturity:** experimental request-guard scaffold deployed to the standalone public repository; Python 3.10–3.12 CI passing  
 **Dependencies:** AIX Core, AIX Codecs, Agent Identity & Trust, Agent Policy Engine
 
 ## Mission
@@ -33,12 +33,11 @@ python -m unittest discover -s tests -v
 
 ## Next gates
 
-1. Deploy this scaffold to the standalone repository.
-2. Integrate a pinned AIX Core schema and AIX Codecs canonical parser.
-3. Add authenticated principal resolution through Agent Identity & Trust.
-4. Add a policy-engine adapter with signed/versioned policy inputs.
-5. Implement one HTTP adapter and protocol-specific MCP/A2A adapters.
-6. Replace in-memory replay tracking with a bounded, shared, durable store for multi-instance deployment.
-7. Add end-to-end negative security tests, fuzzing, load limits, and operational telemetry.
+1. Integrate a pinned AIX Core schema and AIX Codecs canonical parser.
+2. Add authenticated principal resolution through Agent Identity & Trust.
+3. Add a policy-engine adapter with signed/versioned policy inputs.
+4. Implement one HTTP adapter and protocol-specific MCP/A2A adapters.
+5. Replace in-memory replay tracking with a bounded, shared, durable store for multi-instance deployment.
+6. Add end-to-end negative security tests, fuzzing, load limits, and operational telemetry.
 
 No production security, authentication, MCP/A2A conformance, or multi-node replay protection is claimed.
