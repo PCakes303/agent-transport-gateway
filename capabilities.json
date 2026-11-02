@@ -1,0 +1,32 @@
+{
+  "capabilities_version": "1.1.0",
+  "repository": "agent-transport-gateway",
+  "repository_id": "agent-transport-gateway",
+  "maturity": "scaffolding",
+  "capabilities": [
+    {
+      "id": "gateway.request-guard",
+      "name": "Transport-neutral request guard",
+      "status": "scaffolded",
+      "description": "A reference guard enforces body-size limits, timestamp freshness, process-local nonce replay checks and a fail-closed authorization callback.",
+      "evidence": ["gateway_guard/guard.py", "tests/test_guard.py"],
+      "limitations": ["No network listener or protocol adapter is implemented.", "The replay cache is in-memory and process-local.", "Principal authentication is an upstream precondition, not a capability of this repository."]
+    },
+    {
+      "id": "gateway.http-mcp-a2a-adapters",
+      "name": "HTTP, MCP and A2A transport adapters",
+      "status": "planned",
+      "description": "Protocol-specific adapters will map established transport envelopes to AIX Core semantics without replacing native protocol behavior.",
+      "evidence": [],
+      "limitations": ["No executable HTTP, MCP or A2A adapter is included."]
+    }
+  ],
+  "explicit_non_capabilities": [
+    "Credential issuance or caller authentication",
+    "Cryptographic signature verification",
+    "Production authorization enforcement at remote resources",
+    "Distributed or durable replay protection",
+    "Production network gateway or MCP/A2A conformance certification",
+    "Private model reasoning or chain-of-thought transport"
+  ]
+}
