@@ -67,6 +67,61 @@ class GatewayGuardTests(unittest.TestCase):
             body=b"{}", issued_at=self.now[0], nonce="n"
         ).code, "authorization_error")
 
+
+    def test_replay_cache_capacity_is_bounded(self):
+        guard = GatewayGuard(
+            GatewayConfig(max_body_bytes=8, max_clock_skew_seconds=30,
+                          replay_ttl_seconds=60, max_replay_entries=1),
+            authorize=lambda *_: True, clock=lambda: self.now[0]
+        )
+        self.assertTrue(guard.check(
+            principal_id="agent:alpha", action="read", resource="r",
+            body=b"{}", issued_at=self.now[0], nonce="first"
+        ).allowed)
+        self.assertEqual(guard.check(
+            principal_id="agent:alpha", action="read", resource="r",
+            body=b"{}", issued_at=self.now[0], nonce="second"
+        ).code, "replay_capacity_exceeded")
+
+    def test_oversized_context_is_denied(self):
+        self.assertEqual(self.request(nonce="n" * 257).code, "request_context_too_large")
+
+    def test_boolean_timestamp_is_rejected(self):
+        self.assertEqual(self.request(issued_at=True).code, "invalid_timestamp")
+
+    def test_nonfinite_clock_is_rejected(self):
+        guard = GatewayGuard(authorize=lambda *_: True, clock=lambda: float("nan"))
+        self.assertEqual(guard.check(
+            principal_id="agent:alpha", action="read", resource="r",
+            body=b"{}", issued_at=self.now[0], nonce="n"
+        ).code, "invalid_clock")
+
+    def test_clock_exception_fails_closed(self):
+        def broken_clock():
+            raise RuntimeError("clock unavailable")
+        guard = GatewayGuard(authorize=lambda *_: True, clock=broken_clock)
+        self.assertEqual(guard.check(
+            principal_id="agent:alpha", action="read", resource="r",
+            body=b"{}", issued_at=self.now[0], nonce="n"
+        ).code, "clock_unavailable")
+
+    def test_truthy_non_boolean_authorization_response_is_rejected(self):
+        guard = GatewayGuard(authorize=lambda *_: "false", clock=lambda: self.now[0])
+        self.assertEqual(guard.check(
+            principal_id="agent:alpha", action="read", resource="r",
+            body=b"{}", issued_at=self.now[0], nonce="n"
+        ).code, "invalid_authorization_response")
+
+    def test_nonfinite_config_values_are_rejected(self):
+        with self.assertRaises(ValueError):
+            GatewayGuard(GatewayConfig(max_clock_skew_seconds=float("nan")))
+        with self.assertRaises(ValueError):
+            GatewayGuard(GatewayConfig(replay_ttl_seconds=float("inf")))
+
+    def test_noninteger_replay_capacity_is_rejected(self):
+        with self.assertRaises(ValueError):
+            GatewayGuard(GatewayConfig(max_replay_entries=1.5))
+
     def test_invalid_context_is_denied(self):
         self.assertEqual(self.request(principal_id=" ").code, "invalid_request_context")
 
