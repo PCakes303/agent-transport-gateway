@@ -11,7 +11,7 @@ The public remote exists and is authoritative for current implementation. The hi
 
 ## Remediation in progress
 
-The request guard now validates finite configuration and timestamps, bounds principal/action/resource/nonce lengths, caps replay-cache entries, fails closed on replay-cache exhaustion and accepts only explicit boolean `True` from the authorization callback. The cache remains process-local and volatile.
+The request guard validates finite configuration and timestamps, safely rejects numeric conversion overflow, bounds principal/action/resource/nonce lengths, caps replay-cache entries, fails closed on replay-cache exhaustion and accepts only explicit boolean `True` from the authorization callback. The cache remains process-local and volatile.
 
 ## Remaining verification
 
