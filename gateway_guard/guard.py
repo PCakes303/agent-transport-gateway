@@ -30,6 +30,17 @@ class GuardDecision:
 Authorizer = Callable[[str, str, str], bool]
 
 
+def _finite_float(value: object) -> float | None:
+    """Convert a numeric value safely, rejecting booleans, overflow and non-finite values."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    try:
+        converted = float(value)
+    except (OverflowError, ValueError):
+        return None
+    return converted if math.isfinite(converted) else None
+
+
 class GatewayGuard:
     """A bounded, single-process prototype guard; not a production network gateway."""
 
@@ -55,9 +66,10 @@ class GatewayGuard:
             ("max_clock_skew_seconds", self.config.max_clock_skew_seconds, True),
             ("replay_ttl_seconds", self.config.replay_ttl_seconds, False),
         ):
-            if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+            finite_value = _finite_float(value)
+            if finite_value is None:
                 raise ValueError(f"{name} must be a finite number")
-            if value < 0 or (not allow_zero and value == 0):
+            if finite_value < 0 or (not allow_zero and finite_value == 0):
                 raise ValueError(f"{name} is outside its permitted range")
         self.authorize = authorize
         self.clock = clock
@@ -89,16 +101,17 @@ class GatewayGuard:
             return GuardDecision(False, "invalid_body_type")
         if len(body) > self.config.max_body_bytes:
             return GuardDecision(False, "payload_too_large")
-        if isinstance(issued_at, bool) or not isinstance(issued_at, (int, float)) or not math.isfinite(issued_at):
+        issued_at_value = _finite_float(issued_at)
+        if issued_at_value is None:
             return GuardDecision(False, "invalid_timestamp")
         try:
-            now = self.clock()
+            now_raw = self.clock()
         except Exception:
             return GuardDecision(False, "clock_unavailable")
-        if isinstance(now, bool) or not isinstance(now, (int, float)) or not math.isfinite(now):
+        now = _finite_float(now_raw)
+        if now is None:
             return GuardDecision(False, "invalid_clock")
-        now = float(now)
-        if abs(now - float(issued_at)) > self.config.max_clock_skew_seconds:
+        if abs(now - issued_at_value) > self.config.max_clock_skew_seconds:
             return GuardDecision(False, "stale_request")
         if self.authorize is None:
             return GuardDecision(False, "authorizer_unavailable")
