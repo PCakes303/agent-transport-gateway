@@ -13,7 +13,7 @@ A request guard receives:
 - a timestamp;
 - a unique nonce or idempotency token.
 
-It rejects missing context, oversized bodies, stale timestamps, replayed nonces, missing authorizers, denied decisions and authorization errors.
+It rejects missing or oversized context, oversized bodies, invalid/stale timestamps, replayed nonces, missing authorizers, denied decisions and authorization errors. Only an explicit boolean `True` from the authorization callback permits a request; truthy non-boolean values are denied.
 
 ## Trust boundaries
 
@@ -23,7 +23,7 @@ The authorization callback must be backed by the policy-engine contract. A missi
 
 ## Replay behavior
 
-The initial implementation uses an in-memory, process-local nonce cache for tests and single-process experimentation. It is not sufficient for a multi-worker or multi-host gateway. A production adapter must use atomic shared nonce reservation, bounded retention, and documented behavior under store failure.
+The initial implementation uses a bounded in-memory, process-local nonce cache for tests and single-process experimentation. Capacity exhaustion fails closed. It is not sufficient for a multi-worker or multi-host gateway. A production adapter must use atomic shared nonce reservation, bounded retention, and documented behavior under store failure.
 
 ## Protocol adapters
 
