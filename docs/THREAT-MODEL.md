@@ -17,9 +17,9 @@
 | Unauthorized action | Fail-closed authorization callback | No production policy adapter |
 | Oversized payload | Configurable maximum body bytes | No network ingress or streaming limits |
 | Stale request | Configurable timestamp skew | Clock synchronization is an operational dependency |
-| Replay | Process-local nonce cache | Not shared or durable across workers/restarts |
+| Replay | Bounded process-local nonce cache; capacity exhaustion fails closed | Not shared or durable across workers/restarts; multi-instance replay protection remains absent |
 | Malformed AIX message | Future schema/codec validation boundary | Not implemented in initial guard |
-| Transport denial of service | Body limit | Rate limits, quotas and connection budgets remain future work |
+| Transport denial of service | Body limit, bounded context lengths and bounded replay entries | Rate limits, quotas, connection budgets and network ingress limits remain future work |
 | Protocol confusion | Explicit adapter contracts | No MCP/A2A adapters yet |
 
 ## Non-goals
