@@ -8,9 +8,17 @@
       "id": "gateway.request-guard",
       "name": "Transport-neutral request guard",
       "status": "scaffolded",
-      "description": "A reference guard enforces body-size limits, timestamp freshness, process-local nonce replay checks and a fail-closed authorization callback.",
-      "evidence": ["gateway_guard/guard.py", "tests/test_guard.py"],
-      "limitations": ["No network listener or protocol adapter is implemented.", "The replay cache is in-memory and process-local.", "Principal authentication is an upstream precondition, not a capability of this repository."]
+      "description": "A reference guard enforces body-size and request-context limits, timestamp freshness, bounded process-local nonce replay checks and a fail-closed authorization callback that accepts only explicit boolean allow.",
+      "evidence": [
+        "gateway_guard/guard.py",
+        "tests/test_guard.py"
+      ],
+      "limitations": [
+        "No network listener or protocol adapter is implemented.",
+        "The bounded replay cache is in-memory and process-local; capacity exhaustion fails closed, but it does not provide distributed replay protection.",
+        "Principal authentication is an upstream precondition, not a capability of this repository.",
+        "Payload schema validation, cryptographic verification, rate limiting and production authorization integration are not implemented."
+      ]
     },
     {
       "id": "gateway.http-mcp-a2a-adapters",
@@ -18,7 +26,9 @@
       "status": "planned",
       "description": "Protocol-specific adapters will map established transport envelopes to AIX Core semantics without replacing native protocol behavior.",
       "evidence": [],
-      "limitations": ["No executable HTTP, MCP or A2A adapter is included."]
+      "limitations": [
+        "No executable HTTP, MCP or A2A adapter is included."
+      ]
     }
   ],
   "explicit_non_capabilities": [
