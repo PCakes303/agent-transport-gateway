@@ -1,0 +1,13 @@
+# Agent Transport Gateway
+
+Experimental transport-neutral request guard and integration boundary for AIX messages over existing protocols.
+
+- Project: https://github.com/PCakes303/agent-intelligence-ecosystem
+- AIX Core: https://github.com/PCakes303/aix-core
+- AIX Codecs: https://github.com/PCakes303/aix-codecs
+- Contract: docs/TRANSPORT-CONTRACT.md
+- Threat model: docs/THREAT-MODEL.md
+- Implementation: gateway_guard/guard.py
+- Tests: tests/test_guard.py
+
+This scaffold is not a network listener, authentication provider, production gateway, or MCP/A2A conformance implementation.
