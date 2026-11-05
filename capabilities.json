@@ -1,7 +1,7 @@
 {
   "capabilities_version": "1.1.0",
   "repository": "agent-transport-gateway",
-  "repository_id": "agent-transport-gateway",
+  "repository_id": "transport-gateway",
   "maturity": "scaffolding",
   "capabilities": [
     {
